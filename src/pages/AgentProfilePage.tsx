@@ -11,6 +11,7 @@ import { ReassignTeamModal } from '@/components/agents/ReassignTeamModal'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { UserX } from 'lucide-react'
 import { AgentHeader } from '@/components/agents/AgentHeader'
+import { AvatarUploadModal } from '@/components/agents/AvatarUploadModal'
 import { AgentStatCards } from '@/components/agents/AgentStatCards'
 import { AgentTabs, type AgentTabKey } from '@/components/agents/AgentTabs'
 import { OverviewTab } from '@/components/agents/tabs/OverviewTab'
@@ -27,16 +28,18 @@ export function AgentProfilePage() {
   const { agentId } = useParams<{ agentId: string }>()
   const navigate = useNavigate()
   const { toast } = useToast()
-  const { can } = useAuth()
+  const { agent: currentAgent, can } = useAuth()
   const isAdmin = can('move_agents')
   const connected = useAppStore((s) => s.organizationConnected)
   const addDailyNumbers = useAppStore((s) => s.addDailyNumbers)
+  const updateAgent = useAppStore((s) => s.updateAgent)
   const data = useAgentWithStats(agentId)
 
   const [tab, setTab] = useState<AgentTabKey>('overview')
   const [prodOpen, setProdOpen] = useState(false)
   const [refOpen, setRefOpen] = useState(false)
   const [reassignOpen, setReassignOpen] = useState(false)
+  const [avatarOpen, setAvatarOpen] = useState(false)
   const [sending, setSending] = useState(false)
 
   if (!data) {
@@ -57,6 +60,7 @@ export function AgentProfilePage() {
   }
 
   const { agent, stats } = data
+  const isSelf = currentAgent?.id === agent.id
 
   async function handleSendAI() {
     if (!connected) {
@@ -89,6 +93,8 @@ export function AgentProfilePage() {
       <AgentHeader
         agent={agent}
         sending={sending}
+        editable={isSelf}
+        onEditAvatar={() => setAvatarOpen(true)}
         onMessage={() => toast({ title: `Message ${agent.firstName}`, description: 'Chat coming soon.', variant: 'info' })}
         onViewRefBook={() => setTab('refbook')}
         onAddProduction={() => setProdOpen(true)}
@@ -120,6 +126,14 @@ export function AgentProfilePage() {
       />
       <AddAgentReferralModal open={refOpen} onClose={() => setRefOpen(false)} agentId={agent.id} agentName={agent.fullName} />
       {isAdmin && <ReassignTeamModal open={reassignOpen} onClose={() => setReassignOpen(false)} agent={agent} />}
+      {isSelf && (
+        <AvatarUploadModal
+          open={avatarOpen}
+          onClose={() => setAvatarOpen(false)}
+          agent={agent}
+          onSave={(avatarUrl) => updateAgent(agent.id, { avatarUrl })}
+        />
+      )}
     </div>
   )
 }

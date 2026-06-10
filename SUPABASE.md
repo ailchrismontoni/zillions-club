@@ -18,8 +18,15 @@ keep working; in Supabase mode the **agents and teams tables are shared and live
 
 2. **Run the schema.** Open the project's **SQL Editor** and paste/run
    [`supabase/schema.sql`](./supabase/schema.sql). This creates the `teams` and
-   `agents` tables, Row Level Security policies, a realtime publication, and seeds
-   the six teams.
+   `agents` tables, Row Level Security policies, a realtime publication, the
+   public **`avatars` storage bucket** (for profile pictures) with its policies,
+   and seeds the six teams.
+
+   > The `avatars` bucket is created and configured entirely by `schema.sql` —
+   > no manual dashboard steps are needed. If you'd rather verify it by hand:
+   > **Storage → Buckets** should list an `avatars` bucket marked **Public**, and
+   > **Storage → Policies** should show public read + owner-only
+   > insert/update/delete (scoped to each user's `<auth.uid>/` folder).
 
 3. **Turn off email confirmation** (so signup logs the user in immediately):
    **Authentication → Providers → Email → uncheck "Confirm email"** (you can turn
@@ -52,9 +59,15 @@ sees the same shared roster, hierarchy, and stats in real time.
   (`src/app/supabaseBootstrap.ts`), and every agent/team mutation in the store
   (create/update/delete/reassign/role/permissions/goals, create team) **writes
   through** to Supabase (`src/services/supabase/data.ts`).
+- **Profile pictures** — users upload an avatar from their profile page; the image
+  goes to the public `avatars` storage bucket (`src/services/supabase/storage.ts`)
+  and its public URL is saved to `agents.avatar_url` through the normal write-through
+  path. In local-mock mode (no env vars) the image is stored inline as a data URL so
+  the demo still works.
 - **Security** — RLS lets anyone signed in *read* the shared roster, edit *their own*
   row, and only **owners/admins** create/update others or delete (enforced by the
-  `is_admin()` SQL function, mirroring the in-app RBAC).
+  `is_admin()` SQL function, mirroring the in-app RBAC). Storage policies likewise let
+  a user write only within their own `<auth.uid>/` avatar folder.
 
 ## Still local-only (next steps if you want full multi-user)
 

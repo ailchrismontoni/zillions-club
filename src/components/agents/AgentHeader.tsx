@@ -1,4 +1,4 @@
-import { BookUser, Mail, MapPin, Phone, Plus, Sparkles, TrendingUp } from 'lucide-react'
+import { BookUser, Camera, Mail, MapPin, Phone, Plus, Sparkles, TrendingUp } from 'lucide-react'
 import type { Agent } from '@/types'
 import { Avatar } from '@/components/ui/Avatar'
 import { Badge } from '@/components/ui/Badge'
@@ -10,6 +10,9 @@ import { formatShortDate } from '@/lib/dateRanges'
 interface AgentHeaderProps {
   agent: Agent
   sending?: boolean
+  /** When true, show a control to change this agent's profile picture. */
+  editable?: boolean
+  onEditAvatar?: () => void
   onMessage: () => void
   onViewRefBook: () => void
   onAddProduction: () => void
@@ -20,6 +23,8 @@ interface AgentHeaderProps {
 export function AgentHeader({
   agent,
   sending,
+  editable,
+  onEditAvatar,
   onMessage,
   onViewRefBook,
   onAddProduction,
@@ -34,12 +39,25 @@ export function AgentHeader({
       <div className="px-5 pb-5 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="flex items-end gap-4">
-            <Avatar
-              name={agent.fullName}
-              src={agent.avatarUrl}
-              size="xl"
-              className="-mt-10 h-24 w-24 ring-4 ring-white"
-            />
+            <div className="relative -mt-10 shrink-0">
+              <Avatar
+                name={agent.fullName}
+                src={agent.avatarUrl}
+                size="xl"
+                className="h-24 w-24 ring-4 ring-white"
+              />
+              {editable && (
+                <button
+                  type="button"
+                  onClick={onEditAvatar}
+                  className="absolute bottom-0.5 right-0.5 flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-electric text-white shadow-sm transition-colors hover:bg-electric-600 focus-ring"
+                  aria-label="Change profile picture"
+                  title="Change profile picture"
+                >
+                  <Camera className="h-4 w-4" />
+                </button>
+              )}
+            </div>
             <div className="pb-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h1 className="text-2xl font-extrabold tracking-tight text-ink">{agent.fullName}</h1>
