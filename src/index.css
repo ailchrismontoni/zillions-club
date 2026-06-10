@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-paper text-ink font-sans;
+    font-feature-settings: 'cv11', 'ss01';
+    letter-spacing: -0.01em;
+  }
+
+  /* Refined scrollbars */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(16, 24, 40, 0.14);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(16, 24, 40, 0.26);
+    background-clip: content-box;
+  }
+}
+
+@layer components {
+  .card-lift {
+    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lift;
+  }
+
+  .focus-ring {
+    @apply outline-none focus-visible:ring-2 focus-visible:ring-electric/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ── Org chart (Agency Hierarchy tree view) ───────────────────────────── */
+.orgtree ul {
+  position: relative;
+  padding-top: 34px;
+  display: flex;
+  justify-content: center;
+}
+.orgtree li {
+  position: relative;
+  list-style: none;
+  padding: 34px 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* horizontal connector stubs above each node */
+.orgtree li::before,
+.orgtree li::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 50%;
+  height: 34px;
+  border-top: 1.5px solid #dbe1ea;
+}
+.orgtree li::before {
+  right: 50%;
+}
+.orgtree li::after {
+  left: 50%;
+  border-left: 1.5px solid #dbe1ea;
+}
+.orgtree li:only-child::before,
+.orgtree li:only-child::after {
+  display: none;
+}
+.orgtree li:first-child::before,
+.orgtree li:last-child::after {
+  border: 0 none;
+}
+.orgtree li:last-child::before {
+  border-right: 1.5px solid #dbe1ea;
+  border-radius: 0 9px 0 0;
+}
+.orgtree li:first-child::after {
+  border-radius: 9px 0 0 0;
+}
+/* vertical drop line from a parent into the children bus */
+.orgtree ul ul::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 34px;
+  border-left: 1.5px solid #dbe1ea;
+}
+/* root has no incoming connectors */
+.orgtree > ul {
+  padding-top: 0;
+}
+.orgtree > ul > li {
+  padding-top: 0;
+}
+.orgtree > ul > li::before,
+.orgtree > ul > li::after {
+  display: none;
+}
+
+/* Broadcast diagonal streaks used on TopProducerCard */
+.broadcast-streaks {
+  background-image:
+    linear-gradient(115deg, rgba(91, 140, 255, 0) 0%, rgba(91, 140, 255, 0.12) 38%, rgba(91, 140, 255, 0) 42%),
+    linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.06) 52%, rgba(255, 255, 255, 0) 56%);
+}
