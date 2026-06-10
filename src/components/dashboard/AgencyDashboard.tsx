@@ -28,7 +28,7 @@ export function AgencyDashboard() {
         <DashboardActionCard icon={MessageSquare} label="Chat" to="/chat" gradient="bg-gradient-to-br from-emerald-50 to-teal-100/70" iconColor="text-emerald-500" />
         <div className="col-span-2">
           {champion && (
-            <ChampionCard champion={{ name: champion.agent.fullName, refSales: champion.stats.soldReferrals, refSalesValue: championValue, dateRange: weekLabel, label: 'THIS WEEK' }} />
+            <ChampionCard champion={{ name: champion.agent.fullName, refSales: champion.stats.soldReferrals, refSalesValue: championValue, dateRange: weekLabel, label: 'THIS WEEK', avatarUrl: champion.agent.avatarUrl }} />
           )}
         </div>
       </div>
@@ -54,7 +54,7 @@ export function AgencyDashboard() {
           onFullLeaderboard={() => navigate('/teams')}
         />
         {topProducer && (
-          <TopProducerCard producer={{ name: topProducer.agent.fullName, team: topProducer.agent.teamName, role: topProducer.agent.role, alp: topProducer.stats.weeklyAlp, familiesProtected: topProducer.stats.weeklyFamiliesProtected, dateRange: weekLabel }} />
+          <TopProducerCard producer={{ name: topProducer.agent.fullName, team: topProducer.agent.teamName, role: topProducer.agent.role, alp: topProducer.stats.weeklyAlp, familiesProtected: topProducer.stats.weeklyFamiliesProtected, dateRange: weekLabel, avatarUrl: topProducer.agent.avatarUrl }} />
         )}
       </div>
       <p className="text-center text-[12px] text-slate-400">

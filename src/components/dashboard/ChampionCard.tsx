@@ -41,6 +41,7 @@ export function ChampionCard({ champion }: { champion: ChampionCardData }) {
         <div className="absolute inset-0 -m-1 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 blur-[2px]" />
         <Avatar
           name={champion.name}
+          src={champion.avatarUrl}
           size="xl"
           className="relative h-20 w-20 ring-4 ring-white"
         />

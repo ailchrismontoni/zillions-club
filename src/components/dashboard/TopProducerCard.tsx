@@ -68,6 +68,7 @@ export function TopProducerCard({ producer }: { producer: TopProducerCardData })
           <div className="absolute inset-0 rounded-full ring-2 ring-electric/40" />
           <Avatar
             name={producer.name}
+            src={producer.avatarUrl}
             size="xl"
             className="relative h-32 w-32 ring-4 ring-navy-700 sm:h-40 sm:w-40"
           />
