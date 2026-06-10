@@ -87,8 +87,24 @@ drop policy if exists "delete teams" on public.teams;
 create policy "delete teams" on public.teams for delete to authenticated using (public.is_admin());
 
 -- ── Realtime ─────────────────────────────────────────────────────────────────
-alter publication supabase_realtime add table public.agents;
-alter publication supabase_realtime add table public.teams;
+-- Idempotent: only adds a table to the publication if it isn't already a member,
+-- so re-running this file never throws "already member of publication".
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'agents'
+  ) then
+    alter publication supabase_realtime add table public.agents;
+  end if;
+
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'teams'
+  ) then
+    alter publication supabase_realtime add table public.teams;
+  end if;
+end $$;
 
 -- ── Storage: profile pictures ────────────────────────────────────────────────
 -- A public-read `avatars` bucket. Each user can only write within their own
